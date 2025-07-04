@@ -1,0 +1,15 @@
+name: cats
+description: A new Flutter project for cat encyclopedia
+
+environment:
+  sdk: '^3.7.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  shared_preferences: ^2.2.2
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/images/

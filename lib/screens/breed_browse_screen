@@ -1,0 +1,65 @@
+import 'package:flutter/material.dart';
+import '../data/breeds.dart';
+
+class BreedBrowseScreen extends StatelessWidget {
+  final PageController controller;
+  final VoidCallback onScrollDown;
+  final ValueChanged<int>? onPageChanged;
+
+  const BreedBrowseScreen({
+    super.key,
+    required this.controller,
+    required this.onScrollDown,
+    this.onPageChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final sortedBreeds = List.of(breeds)..sort((a, b) => a.name.compareTo(b.name));
+
+    return PageView.builder(
+      controller: controller,
+      scrollDirection: Axis.horizontal,
+      onPageChanged: onPageChanged,
+      itemCount: sortedBreeds.length,
+      itemBuilder: (context, index) {
+        final breed = sortedBreeds[index];
+
+        return GestureDetector(
+          onVerticalDragEnd: (details) {
+            if (details.primaryVelocity != null && details.primaryVelocity! < -300) {
+              onScrollDown();
+            }
+          },
+          child: Container(
+            color: const Color.fromRGBO(239, 225, 200, 1),
+            child: Stack(
+              children: [
+                Center(
+                  child: Image.asset(
+                    breed.imagePath,
+                    fit: BoxFit.contain,
+                  ),
+                ),
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 40),
+                    child: Text(
+                      breed.name,
+                      style: const TextStyle(
+                        fontSize: 40,
+                        color: Colors.black,
+                        fontFamily: 'RobotoSlab',
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
