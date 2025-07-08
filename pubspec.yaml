@@ -11,6 +11,7 @@ dependencies:
   flutter:
     sdk: flutter
   shared_preferences: ^2.2.2
+  google_fonts: ^6.1.0
 
 dev_dependencies:
   flutter_test:
@@ -31,6 +32,6 @@ flutter:
     - assets/images/
     - assets/icon/icon_adaptive.png
   fonts:
-    - family: RobotoSlab
+    - family: AbrilFatface
       fonts:
-        - asset: assets/fonts/RobotoSlab-VariableFont_wght.ttf
+        - asset: assets/fonts/AbrilFatface-Regular.ttf
