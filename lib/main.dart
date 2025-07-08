@@ -1,21 +1,25 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'screens/breed_browse_screen';
-import 'screens/breed_detail_screen';
-import 'package:cats/data/breeds.dart';
+import 'screens/breed_browse_screen.dart';
+import 'screens/breed_detail_screen.dart';
+import 'data/breeds.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const TheCatsApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class TheCatsApp extends StatelessWidget {
+  const TheCatsApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
+      title: 'The Cats',
       debugShowCheckedModeBanner: false,
-      home: RootPager(),
+      theme: ThemeData(
+        scaffoldBackgroundColor: const Color.fromRGBO(247, 241, 228, 1),
+        fontFamily: 'RobotoSlab',
+      ),
+      home: const RootPager(),
     );
   }
 }
@@ -28,70 +32,31 @@ class RootPager extends StatefulWidget {
 }
 
 class _RootPagerState extends State<RootPager> {
-  final PageController _verticalController = PageController();
-  PageController? _horizontalController;
-  int _initialIndex = 0;
+  final PageController _horizontalController = PageController();
+  int _currentIndex = 0;
 
   @override
-  void initState() {
-    super.initState();
-    _loadLastBreedIndex();
-  }
-
-  Future<void> _loadLastBreedIndex() async {
-    final prefs = await SharedPreferences.getInstance();
-    _initialIndex = prefs.getInt('last_breed_index') ?? 0;
-    setState(() {
-      _horizontalController = PageController(initialPage: _initialIndex);
-    });
-  }
-
-  void _saveIndex(int index) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setInt('last_breed_index', index);
+  void dispose() {
+    _horizontalController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    if (_horizontalController == null) {
-      return const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
-      );
-    }
-
     return PageView(
-      controller: _verticalController,
+      controller: _horizontalController,
       scrollDirection: Axis.vertical,
-      physics: const BouncingScrollPhysics(),
       children: [
-        // Экран приветствия
-        GestureDetector(
-          onTap: () => _verticalController.animateToPage(
-            1,
-            duration: const Duration(milliseconds: 400),
-            curve: Curves.easeInOut,
-          ),
-          child: Container(
-            color: const Color.fromRGBO(239, 225, 200, 1),
-            child: const Center(
-              child: Text('Tap to Start', style: TextStyle(fontSize: 32)),
-            ),
-          ),
-        ),
-
-        // Экран выбора породы
+        // Экран 1: Галерея пород
         BreedBrowseScreen(
-          controller: _horizontalController!,
-          onScrollDown: () => _verticalController.animateToPage(
-            2,
-            duration: const Duration(milliseconds: 400),
-            curve: Curves.easeInOut,
-          ),
-          onPageChanged: _saveIndex,
+          controller: _horizontalController,
+          onSwipe: (index) {
+            setState(() => _currentIndex = index);
+          },
         ),
 
-        // Экран описания породы
-        BreedDetailScreen(controller: _horizontalController!),
+        // Экран 2: Детали выбранной породы
+        BreedDetailScreen(initialIndex: _currentIndex),
       ],
     );
   }

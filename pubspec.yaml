@@ -1,15 +1,36 @@
 name: cats
-description: A new Flutter project for cat encyclopedia
+description: A beautiful encyclopedia of cat breeds.
+publish_to: "none" # Remove this line if you want to publish to pub.dev
+
+version: 1.0.0+1
 
 environment:
-  sdk: '^3.7.0'
+  sdk: ">=3.7.0 <4.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
   shared_preferences: ^2.2.2
 
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_launcher_icons: ^0.13.1
+  flutter_lints: ^3.0.1
+
+flutter_icons:
+  android: true
+  ios: false
+  adaptive_icon_foreground: "assets/icon/icon_adaptive.png"
+  adaptive_icon_background: "#EFE1C8"
+  image_path: "assets/icon/icon_adaptive.png"
+
 flutter:
   uses-material-design: true
   assets:
     - assets/images/
+    - assets/icon/icon_adaptive.png
+  fonts:
+    - family: RobotoSlab
+      fonts:
+        - asset: assets/fonts/RobotoSlab-VariableFont_wght.ttf
