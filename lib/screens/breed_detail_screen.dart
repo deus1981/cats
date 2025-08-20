@@ -1,155 +1,342 @@
 import 'package:flutter/material.dart';
-import 'package:cats/data/breeds.dart';
+import '../data/breeds.dart';
 
-class BreedDetailScreen extends StatefulWidget {
-  final int initialIndex;
+class BreedDetailScreen extends StatelessWidget {
+  final CatBreed breed;
 
-  const BreedDetailScreen({super.key, required this.initialIndex});
-
-  @override
-  State<BreedDetailScreen> createState() => _BreedDetailScreenState();
-}
-
-class _BreedDetailScreenState extends State<BreedDetailScreen> {
-  late PageController _imagePageController;
-  late ScrollController _scrollController;
-  late int _currentIndex;
-
-  @override
-  void initState() {
-    super.initState();
-    _currentIndex = widget.initialIndex;
-    _imagePageController = PageController();
-    _scrollController = ScrollController();
-  }
-
-  void _handleVerticalDrag(DragEndDetails details) {
-    if (details.primaryVelocity != null && details.primaryVelocity! > 500) {
-      Navigator.pop(context);
-    }
-  }
-
-  @override
-  void dispose() {
-    _imagePageController.dispose();
-    _scrollController.dispose();
-    super.dispose();
-  }
+  const BreedDetailScreen({
+    super.key,
+    required this.breed,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final breed = breeds[_currentIndex];
-    final images = breed.images;
-
     return Scaffold(
-      backgroundColor: const Color(0xFFF7F1E4),
-      body: GestureDetector(
-        onVerticalDragEnd: _handleVerticalDrag,
-        child: SafeArea(
-          child: Column(
-            children: [
-              const SizedBox(height: 4),
-
-              // Название породы
-              Text(
-                breed.name,
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  fontSize: 28,
-                  fontFamily: 'AbrilFatface',
+      backgroundColor: const Color.fromRGBO(247, 241, 228, 1),
+      body: CustomScrollView(
+        slivers: [
+          // App Bar с изображением
+          SliverAppBar(
+            expandedHeight: 300,
+            floating: false,
+            pinned: true,
+            backgroundColor: const Color.fromRGBO(247, 241, 228, 1),
+            flexibleSpace: FlexibleSpaceBar(
+              background: Stack(
+                children: [
+                  // Основное изображение
+                  breed.isNetworkImage
+                      ? FadeInImage.network(
+                          placeholder: 'assets/images/placeholder.png',
+                          image: breed.images.first,
+                          fit: BoxFit.cover,
+                          width: double.infinity,
+                          height: double.infinity,
+                          imageErrorBuilder: (context, error, stackTrace) {
+                            return Container(
+                              color: Colors.grey[300],
+                              child: const Icon(
+                                Icons.pets,
+                                size: 100,
+                                color: Colors.grey,
+                              ),
+                            );
+                          },
+                        )
+                      : Image.asset(
+                          breed.images.first,
+                          fit: BoxFit.cover,
+                          width: double.infinity,
+                          height: double.infinity,
+                          errorBuilder: (context, error, stackTrace) {
+                            return Container(
+                              color: Colors.grey[300],
+                              child: const Icon(
+                                Icons.pets,
+                                size: 100,
+                                color: Colors.grey,
+                              ),
+                            );
+                          },
+                        ),
+                  
+                  // Градиентный оверлей
+                  Positioned.fill(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            Colors.transparent,
+                            Colors.black.withOpacity(0.3),
+                            Colors.black.withOpacity(0.6),
+                          ],
+                          stops: const [0.0, 0.6, 1.0],
+                        ),
+                      ),
+                    ),
+                  ),
+                  
+                  // Название породы поверх изображения
+                  Positioned(
+                    bottom: 20,
+                    left: 20,
+                    right: 20,
+                    child: Text(
+                      breed.name,
+                      style: const TextStyle(
+                        fontSize: 36,
+                        fontFamily: 'AbrilFatface',
+                        color: Colors.white,
+                        shadows: [
+                          Shadow(
+                            offset: Offset(2, 2),
+                            blurRadius: 4,
+                            color: Colors.black54,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            leading: IconButton(
+              icon: Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.9),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: const Icon(
+                  Icons.arrow_back,
                   color: Colors.black,
                 ),
               ),
-
-              const SizedBox(height: 4),
-
-              // Картинка кота (с горизонтальным скроллом)
-              SizedBox(
-                height: MediaQuery.of(context).size.height * 0.45,
-                child: PageView.builder(
-                  controller: _imagePageController,
-                  itemCount: images.length,
-                  onPageChanged: (index) {
-                    setState(() {});
-                  },
-                  itemBuilder: (context, index) {
-                    final image = images[index % images.length];
-                    return Image.asset(
-                      image,
-                      fit: BoxFit.contain,
-                    );
-                  },
-                ),
-              ),
-
-              const SizedBox(height: 12),
-
-              // Текстовое описание
-              Expanded(
-                child: NotificationListener<ScrollEndNotification>(
-                  onNotification: (notification) {
-                    if (_scrollController.offset <= 0 &&
-                        notification is ScrollEndNotification) {
-                      Navigator.pop(context);
-                    }
-                    return false;
-                  },
-                  child: SingleChildScrollView(
-                    controller: _scrollController,
-                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+          ),
+          
+          // Основной контент
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Основная информация
+                  _buildInfoSection(
+                    title: 'Основная информация',
+                    children: [
+                      _buildInfoRow('Происхождение', breed.origin, Icons.location_on),
+                      _buildInfoRow('Продолжительность жизни', breed.lifeSpan, Icons.timer),
+                      _buildInfoRow('Вес', breed.weight, Icons.monitor_weight),
+                    ],
+                  ),
+                  
+                  const SizedBox(height: 24),
+                  
+                  // Темперамент
+                  _buildInfoSection(
+                    title: 'Темперамент',
+                    children: [
+                      Wrap(
+                        spacing: 8,
+                        runSpacing: 8,
+                        children: breed.temperament.split(', ').map((trait) {
+                          return Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 8,
+                            ),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(20),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.1),
+                                  blurRadius: 4,
+                                  offset: const Offset(0, 2),
+                                ),
+                              ],
+                            ),
+                            child: Text(
+                              trait.trim(),
+                              style: const TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                    ],
+                  ),
+                  
+                  const SizedBox(height: 24),
+                  
+                  // Описание
+                  _buildInfoSection(
+                    title: 'Описание',
+                    children: [
+                      Text(
+                        breed.description,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          height: 1.6,
+                          color: Colors.black87,
+                        ),
+                      ),
+                    ],
+                  ),
+                  
+                  const SizedBox(height: 24),
+                  
+                  // Галерея изображений
+                  if (breed.images.length > 1)
+                    _buildInfoSection(
+                      title: 'Галерея',
                       children: [
-                        _infoRow("Origin", breed.origin),
-                        _infoRow("Temperament", breed.temperament),
-                        _infoRow("Life Span", breed.lifeSpan),
-                        _infoRow("Weight", breed.weight),
-                        const SizedBox(height: 20),
-                        const Text(
-                          "Description",
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
+                        SizedBox(
+                          height: 120,
+                          child: ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            itemCount: breed.images.length,
+                            itemBuilder: (context, index) {
+                              return Container(
+                                margin: const EdgeInsets.only(right: 12),
+                                width: 120,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(12),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withOpacity(0.1),
+                                      blurRadius: 4,
+                                      offset: const Offset(0, 2),
+                                    ),
+                                  ],
+                                ),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(12),
+                                  child: breed.isNetworkImage
+                                      ? FadeInImage.network(
+                                          placeholder: 'assets/images/placeholder.png',
+                                          image: breed.images[index],
+                                          fit: BoxFit.cover,
+                                          imageErrorBuilder: (context, error, stackTrace) {
+                                            return Container(
+                                              color: Colors.grey[300],
+                                              child: const Icon(
+                                                Icons.pets,
+                                                size: 40,
+                                                color: Colors.grey,
+                                              ),
+                                            );
+                                          },
+                                        )
+                                      : Image.asset(
+                                          breed.images[index],
+                                          fit: BoxFit.cover,
+                                          errorBuilder: (context, error, stackTrace) {
+                                            return Container(
+                                              color: Colors.grey[300],
+                                              child: const Icon(
+                                                Icons.pets,
+                                                size: 40,
+                                                color: Colors.grey,
+                                              ),
+                                            );
+                                          },
+                                        ),
+                                ),
+                              );
+                            },
                           ),
                         ),
-                        const SizedBox(height: 8),
-                        Text(
-                          breed.description,
-                          style: const TextStyle(fontSize: 16, height: 1.5),
-                        ),
-                        const SizedBox(height: 80),
                       ],
                     ),
-                  ),
-                ),
+                  
+                  const SizedBox(height: 40),
+                ],
               ),
-            ],
+            ),
           ),
-        ),
+        ],
       ),
     );
   }
 
-  Widget _infoRow(String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            width: 100,
-            child: Text(
-              "$label:",
-              style: const TextStyle(
-                fontWeight: FontWeight.w600,
-                fontSize: 16,
-              ),
-            ),
+  Widget _buildInfoSection({
+    required String title,
+    required List<Widget> children,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          title,
+          style: const TextStyle(
+            fontSize: 24,
+            fontFamily: 'AbrilFatface',
+            fontWeight: FontWeight.bold,
+            color: Colors.black,
           ),
+        ),
+        const SizedBox(height: 16),
+        Container(
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.05),
+                blurRadius: 8,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: children,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildInfoRow(String label, String value, IconData icon) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: Row(
+        children: [
+          Icon(
+            icon,
+            size: 20,
+            color: Colors.grey[600],
+          ),
+          const SizedBox(width: 12),
           Expanded(
-            child: Text(
-              value,
-              style: const TextStyle(fontSize: 16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  label,
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.grey[600],
+                  ),
+                ),
+                Text(
+                  value,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.black,
+                  ),
+                ),
+              ],
             ),
           ),
         ],
