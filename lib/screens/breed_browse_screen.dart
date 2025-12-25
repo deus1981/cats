@@ -46,7 +46,7 @@ class BreedBrowseScreen extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.only(left: 40.0), // 40 пикселей
                   child: Text(
-                    'TheCats',
+                    'The Cats',
                     style: const TextStyle(
                       fontSize: 28,
                       fontFamily: 'AbrilFatface',
@@ -58,11 +58,10 @@ class BreedBrowseScreen extends StatelessWidget {
             ),
 
             // Название породы снизу по центру
-            // Замените текущий Align(...) на это:
             Align(
               alignment: Alignment.bottomCenter,
               child: Padding(
-                padding: const EdgeInsets.only(bottom: 20),
+                padding: const EdgeInsets.only(bottom: 40),
                 child: FractionallySizedBox(
                   widthFactor: 0.8, // Ограничим ширину до 80% экрана
                   child: Text(
@@ -75,7 +74,7 @@ class BreedBrowseScreen extends StatelessWidget {
                       fontSize: 48,
                       fontFamily: 'AbrilFatface',
                       color: Colors.black,
-                      height: 0.9, // 👈 Это уменьшает расстояние между строками
+                      height: 0.9, // Это уменьшает расстояние между строками
                     ),
                   ),
                 ),

@@ -21,6 +21,7 @@ class TheCatsApp extends StatelessWidget {
       ),
       home: const RootPager(),
     );
+    
   }
 }
 
