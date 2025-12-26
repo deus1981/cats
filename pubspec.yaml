@@ -18,8 +18,9 @@ dev_dependencies:
     sdk: flutter
   flutter_launcher_icons: ^0.13.1
   flutter_lints: ^3.0.1
+  flutter_native_splash: ^2.4.6
 
-flutter_icons:
+flutter_launcher_icons:
   android: true
   ios: false
   adaptive_icon_foreground: "assets/icon/icon_adaptive.png"
@@ -35,3 +36,13 @@ flutter:
     - family: AbrilFatface
       fonts:
         - asset: assets/fonts/AbrilFatface-Regular.ttf
+
+flutter_native_splash:
+  color: "#EFE1C8"
+  image: assets/images/splash.png
+
+  android_12:
+    color: "#EFE1C8"
+    image: assets/images/splash.png
+
+

@@ -1,11 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- Цвет фона -->
-    <item android:drawable="@color/background_color" />
-
-    <!-- Изображение по центру -->
     <item>
         <bitmap
-            android:gravity="center"
-            android:src="@drawable/splash_logo" />
+            android:gravity="fill"
+            android:src="@drawable/splash" />
     </item>
 </layer-list>

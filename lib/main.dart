@@ -21,7 +21,6 @@ class TheCatsApp extends StatelessWidget {
       ),
       home: const RootPager(),
     );
-    
   }
 }
 
@@ -33,24 +32,15 @@ class RootPager extends StatefulWidget {
 }
 
 class _RootPagerState extends State<RootPager> {
-  final PageController _horizontalController = PageController();
   int _currentIndex = 0;
-
-  @override
-  void dispose() {
-    _horizontalController.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
     return PageView(
-      controller: _horizontalController,
       scrollDirection: Axis.vertical,
       children: [
         // Экран 1: Галерея пород
         BreedBrowseScreen(
-          controller: _horizontalController,
           onSwipe: (index) {
             setState(() => _currentIndex = index);
           },

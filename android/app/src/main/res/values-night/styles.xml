@@ -1,13 +1,16 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-<!-- Основная тема приложения -->
+    <!-- Основная тема приложения -->
     <style name="Theme.Cats" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="android:windowBackground">@color/background_color</item>
         <item name="android:statusBarColor">#00000000</item>
     </style>
-
     <!-- Тема экрана запуска -->
     <style name="LaunchTheme" parent="@android:style/Theme.Black.NoTitleBar">
         <item name="android:windowBackground">@drawable/launch_background</item>
         <item name="android:statusBarColor" tools:targetApi="l">#F7F1E4</item>
+        <item name="android:forceDarkAllowed">false</item>
+        <item name="android:windowFullscreen">false</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">false</item>
+        <item name="android:windowLayoutInDisplayCutoutMode">shortEdges</item>
     </style>
 </resources>

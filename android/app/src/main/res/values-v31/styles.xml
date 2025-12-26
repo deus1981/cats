@@ -1,0 +1,23 @@
+<resources>
+
+    <!-- Тема приложения после Splash -->
+    <style name="Theme.Cats" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="android:windowBackground">@color/background_color</item>
+        <item name="android:statusBarColor">#00000000</item>
+    </style>
+
+    <!-- Splash Theme -->
+    <style name="LaunchTheme" parent="Theme.SplashScreen">
+
+        <!-- Фон — твоя картинка -->
+        <item name="android:windowSplashScreenBackground">@drawable/launch_background</item>
+
+        <!-- Отключаем стандартную иконку -->
+        <item name="android:windowSplashScreenAnimatedIcon">@null</item>
+
+        <!-- После Splash → твоя тема -->
+        <item name="postSplashScreenTheme">@style/Theme.Cats</item>
+
+    </style>
+
+</resources>
