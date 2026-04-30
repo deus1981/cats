@@ -30,9 +30,11 @@ final List<CatBreed> breeds = [
     description:
     'The Abyssinian is a breed of domestic short-haired cat with a distinctive "ticked" tabby coat, in which individual hairs are banded with different colors. They are medium-sized cats with a lithe, muscular body and large, alert ears. Abyssinians are known for their intelligence, playfulness, and extroverted personality.\n\nThese cats are extremely active and love to climb and explore. They are often described as dog-like in their loyalty and will follow their owners around the house. Abyssinians are also known for their soft, chirping voice and their love of interactive play.\n\nThe breed originated in Ethiopia (formerly Abyssinia) and was brought to England in the 1860s.',
     images: [
+      'assets/images/abyssinian.png',
       'assets/images/abyssinian_1.png',
       'assets/images/abyssinian_2.png',
       'assets/images/abyssinian_3.png',
+      'assets/images/abyssinian_4.png',
     ],
   ),
   CatBreed(
